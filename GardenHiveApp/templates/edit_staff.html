@@ -1,0 +1,51 @@
+{% extends "nurserybase.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Staff</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>First Name:</label>
+            <input type="text" name="first_name" class="form-control" value="{{ staff.first_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Last Name:</label>
+            <input type="text" name="last_name" class="form-control" value="{{ staff.last_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" name="email" class="form-control" value="{{ staff.email }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Phone:</label>
+            <input type="text" name="phone" class="form-control" value="{{ staff.phone }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Role:</label>
+            <select name="role" class="form-control" required>
+                <option value="Manager" {% if staff.role == "Manager" %}selected{% endif %}>Manager</option>
+                <option value="Sales" {% if staff.role == "Sales" %}selected{% endif %}>Sales</option>
+                <option value="Support" {% if staff.role == "Support" %}selected{% endif %}>Support</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Image:</label>
+            <input type="file" name="image" class="form-control">
+            {% if staff.image %}
+                <img src="{{ staff.image.url }}" alt="Staff Image" width="150" class="mt-2">
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a href="{% url 'staff_list' nursery.id %}" class="btn btn-secondary">Back to Staff List</a>
+    </form>
+</div>
+{% endblock %}

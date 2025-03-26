@@ -1,0 +1,40 @@
+{% extends 'userbase.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center">Search Nurseries</h2>
+
+    <form method="GET" action="{% url 'search_nursery' %}" class="mb-4">
+        <input type="text" name="query" class="form-control" placeholder="Search for a nursery..." value="{{ query }}">
+        <button type="submit" class="btn btn-success mt-2">Search</button>
+    </form>
+
+    {% if nurseries %}
+        {% for nursery, products in nursery_products.items %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4>{{ nursery.name }}</h4>
+                    <p><strong>Address:</strong> {{ nursery.addr }}</p>
+                    <p><strong>Owner:</strong> {{ nursery.owner }}</p>
+
+                    {% if products %}
+                        <h5>Available Products:</h5>
+                        <ul>
+                            {% for product in products %}
+                                <li>
+                                    <strong>{{ product.name }}</strong> - ${{ product.price }}
+                                    <a href="{% url 'book_product' product.id %}" class="btn btn-primary btn-sm">Book Now</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No products available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-center">No nurseries found.</p>
+    {% endif %}
+</div>
+{% endblock %}

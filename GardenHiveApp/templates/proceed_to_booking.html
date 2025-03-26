@@ -1,0 +1,83 @@
+{% extends "userbase.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Booking Details</h2>
+
+    <form method="POST" action="{% url 'confirm_booking' %}">
+        {% csrf_token %}
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Image</th>
+                    <th>Price (₹)</th>
+                    <th>Quantity</th>
+                    <th>Total (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                             style="width: 80px; height: 80px; object-fit: cover;">
+                    </td>
+                    <td class="price" data-price="{{ item.product.price }}">
+                        ₹ {{ item.product.price }}
+                    </td>
+                    <td>
+                        <input type="number" name="quantity_{{ item.id }}" 
+                               value="{{ item.quantity }}" min="1"
+                               class="form-control quantity-input" 
+                               data-item-id="{{ item.id }}" 
+                               onchange="updateTotal(this)">
+                    </td>
+                    <td class="item-total" id="total_{{ item.id }}">
+                        ₹ {{ item.product.price|floatformat:2 }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h4 class="text-end">Total Price: ₹ <span id="grandTotal">{{ total_price }}</span></h4>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary">Confirm Booking</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Function to update the total price dynamically
+    function updateTotal(input) {
+        let row = input.closest('tr');
+        let price = parseFloat(row.querySelector('.price').dataset.price);
+        let quantity = parseInt(input.value);
+        
+        if (quantity < 1) {
+            quantity = 1; 
+            input.value = 1;
+        }
+
+        let totalElement = row.querySelector('.item-total');
+        let itemTotal = price * quantity;
+        totalElement.textContent = `₹ ${itemTotal.toFixed(2)}`;
+
+        updateGrandTotal();
+    }
+
+    // Function to update the grand total
+    function updateGrandTotal() {
+        let grandTotal = 0;
+        document.querySelectorAll('.item-total').forEach(item => {
+            grandTotal += parseFloat(item.textContent.replace('₹', '').trim());
+        });
+
+        document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
+    }
+</script>
+{% endblock %}

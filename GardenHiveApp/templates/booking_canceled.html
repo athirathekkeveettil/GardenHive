@@ -1,0 +1,7 @@
+{% extends 'userbase.html' %}
+
+{% block content %}
+<h2>Booking Status</h2>
+<p>{{ message }}</p>
+<a href="{% url 'view_booking' %}" class="btn btn-primary">Back to Bookings</a>
+{% endblock %}

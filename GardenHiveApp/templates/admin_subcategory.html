@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Subcategories | Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+
+    <h2 class="text-center">Manage Subcategories</h2>
+
+    <div class="text-end">
+        <a href="/adminhome" class="btn btn-primary" style="background-color: #006400">Back to Home</a>
+        <a href="/admin_category" class="btn btn-secondary">Manage Categories</a>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Add Subcategory Form -->
+    <div class="card p-4 mt-3">
+        <h4>Add New Subcategory</h4>
+        <form method="POST" action="{% url 'admin_subcategory' %}">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label>Category</label>
+                <select name="category" class="form-control" required>
+                    <option value="">Select Category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label>Subcategory Name</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Description</label>
+                <textarea name="description" class="form-control"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">Add Subcategory</button>
+        </form>
+    </div>
+
+    <!-- List of Existing Subcategories -->
+    <h4 class="mt-5">Existing Subcategories</h4>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Subcategory</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subcategory in subcategories %}
+            <tr>
+                <td>{{ subcategory.category.name }}</td>
+                <td>{{ subcategory.name }}</td>
+                <td>{{ subcategory.description }}</td>
+                <td>
+                    <a href="{% url 'update_subcategory' subcategory.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'delete_subcategory' subcategory.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No subcategories found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

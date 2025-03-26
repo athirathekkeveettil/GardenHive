@@ -1,0 +1,50 @@
+{% extends 'userbase.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="text-center">📦 Booking Confirmation</h2>
+
+    <form method="POST" action="{% url 'book_cart' %}">
+        {% csrf_token %}
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Product</th>
+                    <th>Price (per unit)</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in subtotals %}
+                <tr>
+                    <td>{{ sub.item.product.name }}</td>
+                    <td>₹{{ sub.item.product.price }}</td>
+
+                    <!-- Quantity input field with hidden cart ID -->
+                    <td>
+                        <input type="hidden" name="cart_id" value="{{ sub.item.id }}">
+                        <input type="number" name="quantity_{{ sub.item.id }}" value="{{ sub.item.quantity }}" min="1" class="form-control" onchange="this.form.submit()">
+                    </td>
+
+                    <td>₹{{ sub.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
+    <div class="text-center mt-4">
+        <h4>Total Price: ₹{{ total_price }}</h4>
+
+        <a href="{% url 'cart' %}" class="btn btn-secondary">Back to Cart</a>
+        <form method="POST" action="{% url 'payment' total_price=total_price %}">
+            {% csrf_token %}
+            <input type="hidden" name="total_price" value="{{ total_price }}">
+            <button type="submit" class="btn btn-success">Confirm Booking</button>
+        </form>
+    
+    </div>
+</div>
+{% endblock %}
