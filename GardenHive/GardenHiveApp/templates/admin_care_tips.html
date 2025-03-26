@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Care Tips | Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+
+    <h2 class="text-center">Manage Care Tips</h2>
+    <div class="text-end">
+        <a href="/adminhome" class="btn btn-primary" style="background-color: #006400">Back to Home</a>
+    </div>
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Add Care Tip Form -->
+    <div class="card p-4 mt-3">
+        <h4>Add New Care Tip</h4>
+        <form method="POST" action="{% url 'admin_care_tips' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label>Category</label>
+                <select name="category" class="form-control" required>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label>Product Name</label>
+                <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label>Care Tip Title</label>
+                <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label>Description</label>
+                <textarea name="description" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Add Care Tip</button>
+        </form>
+    </div>
+    
+    <!-- Care Tips List Grouped by Category -->
+    <h4 class="mt-5">Existing Care Tips</h4>
+    {% for category in categories %}
+        <h5 class="mt-4">{{ category.name }}</h5>
+        <table class="table table-bordered mt-2">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for care_tip in care_tips %}
+                    {% if care_tip.category.id == category.id %}
+                        <tr>
+                            <td>{{ care_tip.title }}</td>
+                            <td>{{ care_tip.description }}</td>
+                            <td>
+                                <a href="{% url 'update_care_tip' care_tip.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{% url 'delete_care_tip' care_tip.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+
+</body>
+</html>

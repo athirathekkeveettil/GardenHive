@@ -1,0 +1,10 @@
+{% extends 'userbase.html' %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2 class="text-success">✅ Payment Successful!</h2>
+    <p>Thank you for your booking.</p>
+
+    <a href="{% url 'userhome' %}" class="btn btn-primary mt-3">Go to Home</a>
+</div>
+{% endblock %}

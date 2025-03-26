@@ -1,0 +1,35 @@
+{% extends "nurserybase.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Bookings for {{ nursery.name }}</h2>
+    <table class="table table-bordered table-striped mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Booking ID</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Booking Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.product.name }}</td>
+                <td>{{ booking.quantity }}</td>
+                <td>₹{{ booking.total_price }}</td>
+                <td>{{ booking.status }}</td>
+                <td>{{ booking.booking_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No bookings found for this nursery.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

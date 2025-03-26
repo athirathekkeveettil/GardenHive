@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Accounts | Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+
+    <h2 class="text-center">Manage Users & Nurseries</h2>
+    <div class="text-end">
+        <a href="/adminhome" class="btn btn-primary" style="background-color: #006400">Back to Home</a>
+    </div>
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Dropdown to Select User or Nursery -->
+    <form method="GET" action="{% url 'admin_manage_accounts' %}" class="mb-3">
+        <label><b>Select Account Type:</b></label>
+        <select name="type" class="form-control w-25" onchange="this.form.submit()">
+            <option value="user" {% if selected_type == "user" %}selected{% endif %}>Users</option>
+            <option value="nursery" {% if selected_type == "nursery" %}selected{% endif %}>Nurseries</option>
+        </select>
+    </form>
+
+    <!-- Users Table -->
+    {% if selected_type == "user" %}
+    <h4>Registered Users</h4>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Date Joined</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.date_joined }}</td>
+                    <td>
+                        <a href="{% url 'delete_user' user.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No users found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <!-- Nurseries Table -->
+    {% if selected_type == "nursery" %}
+    <h4>Registered Nurseries</h4>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nursery in nurseries %}
+                <tr>
+                    <td>{{ nursery.id }}</td>
+                    <td>{{ nursery.name }}</td>
+                    <td>{{ nursery.owner }}</td>
+                    <td>{{ nursery.email }}</td>
+                    <td>{{ nursery.phno }}</td>
+                    <td>
+                        <a href="{% url 'delete_nursery' nursery.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No nurseries found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+</body>
+</html>
